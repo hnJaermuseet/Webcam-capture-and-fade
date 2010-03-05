@@ -34,7 +34,9 @@ import com.sun.image.codec.jpeg.*;
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
  * 
- * @author Jærmuseet / Vitenfabrikken, Hallvard Nygard <hn@jaermuseet.no>
+ * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Vitenfabrikken (part of Jærmuseet)
+ * 
+ * @author Jærmuseet / Vitenfabrikken, Hallvard Nygård <hn@jaermuseet.no>
  *
  */
 

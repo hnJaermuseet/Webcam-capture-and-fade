@@ -1,0 +1,13 @@
+WEBCAM CAPTURE AND FADE
+
+This program is made for the science center Vitenfabrikken in Sandnes, Norway. It captures images from a normal webcamera in Windows and fades between the captured images.
+
+The program is made February/March for 2010 for the exhibition "Kem e Sandnes?" ("Who is Sandnes?"). The exhibition will be/is opened on 14th of April.
+
+Some features:
+- A picture is only shown once in the fading images
+- Pictures captures is saved with the current time and date
+- With no camera connected, the program won't start (gives a error message)
+- Debug by pressing t, y or u (more can be added in keyPressed())
+
+Program is written by Hallvard Nygård <hn@jaermuseet.no> for Vitenfabrikken (part of Jærmuseet)
