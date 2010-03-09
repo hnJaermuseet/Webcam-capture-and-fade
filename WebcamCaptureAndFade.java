@@ -213,6 +213,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 			}
 		}
 		
+		System.out.println("Total image count = " + images.size());
 		gotImages = true;
 	}
 	
