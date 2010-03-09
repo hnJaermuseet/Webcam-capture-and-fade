@@ -91,11 +91,6 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public BufferToImage btoi;
 	public JPanel buttonpanel;
 	
-	
-	//public ImagePanel[] imgpanel;
-	//public int imagepanels = 10;
-	
-	
 	public FormatControl formatControl;
 	
 	public String saveDirectory = "l:\\webcamtest";
@@ -154,18 +149,6 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 			System.exit(0);
 		}
 		
-		// Capture-buttons
-		// (not in use any more)
-		/*
-		buttonpanel = new JPanel();
-		capture = new JButton("Capture");
-		capture.addActionListener(this);
-		buttonpanel.add(capture, BorderLayout.WEST);
-		capture2 = new JButton("Capture2");
-		capture2.addActionListener(this);
-		buttonpanel.add(capture2, BorderLayout.EAST);
-		*/
-		
 		/*
 		 * Layout
 		 * 
@@ -176,14 +159,11 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		setLayout(new BorderLayout());
 		setSize((4+2+4)*size_x, (6)*size_y);
 		
-		//add(buttonpanel,	BorderLayout.SOUTH);
-		
 		add(imagepanels[0],	BorderLayout.WEST);
 		
 		JPanel middle = new JPanel(new BorderLayout());
 		middle.add(imagepanels[1], BorderLayout.NORTH);
 		if ((comp = player.getVisualComponent()) != null) {
-			//comp.setPreferredSize(new Dimension(7*size_x,7*size_y));
 			middle.add(comp, BorderLayout.CENTER);
 		}
 		middle.add(imagepanels[2], BorderLayout.SOUTH);
