@@ -31,6 +31,8 @@ import com.sun.image.codec.jpeg.*;
  * Some features:
  * - A picture is only shown once in the fading images
  * - Pictures captures is saved with the current time and date
+ * - Last pictures captured as shown more often than older once 
+ *   (number of pictures considered last pictures is controlled by lastadded_max)
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
  * 
@@ -109,6 +111,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		
 		getImages();
 		images_used = new ArrayList<Integer>();
+		images_lastadded = new ArrayList<Integer>();
+		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[4];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
 		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
@@ -252,10 +256,13 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		//images.add(img);
 		images.add(savepath);
 		
-		if(lastImg >= 9)
-			images_last[0] = images.size()-1;
-		else
-			images_last[++lastImg] = images.size()-1;
+		if(images_lastadded.size() >= lastadded_max)
+		{
+			// Remove last
+			images_lastadded.remove(images_lastadded.size()-1);
+		}
+		
+		images_lastadded.add(0, images.size()-1);
 	}
 	
 	public void nextFrame() {
@@ -294,7 +301,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 
 	public ArrayList<String> images;
 	public ArrayList<Integer> images_used;
-	public int[] images_last = new int[10];
+	
+	public ArrayList<Integer> images_lastadded; // Last added, intergers refering to images
+	public int lastadded_max = 20; // How many images is considered "lastadded"
+	public int randomImageNum_maxTries = 100;
 	
 	public int lastImg = 0;
 	
@@ -304,14 +314,26 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		else
 		{
 			int i;
+			int j = 0;
 			int tries = 0; 
-			while(true && tries < 100)
+			while(true && tries < randomImageNum_maxTries)
 			{
-				i = (int)(Math.random() * images.size());
+				// Always try the last added pictures
+				if (j < images_lastadded.size())
+				{
+					i = images_lastadded.get(j++);
+				}
+				else
+				{
+					// Random from the rest of the pictures
+					i = (int)(Math.random() * images.size());
+					tries++;
+				}
 				if(!images_used.contains((Integer)i))
 					return i;
-				tries++;
 			}
+			
+			System.out.println("Max tries in randomImageNum");
 			return -1;
 		}
 		
@@ -537,6 +559,18 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		{
 			// Testing purpose
 			System.out.println("getRandomImageNum() = " + getRandomImageNum());
+		}
+		
+		else if(e.getKeyCode() == 73) // i
+		{
+			// Testing purpose
+			System.out.println("LAST ADDED");
+			for (int i = 0; i < images_lastadded.size(); i++) {
+				System.out.println(i + " - image " + images_lastadded.get(i) + ", used? " + 
+						images_used.contains(
+								(Integer)images_lastadded.get(i)
+							));
+			}
 		}
 		
 		else if(e.getKeyCode() == 85) // u
