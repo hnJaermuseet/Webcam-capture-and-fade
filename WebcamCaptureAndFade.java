@@ -496,17 +496,28 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 					if(fade[i][j] >= 1.0f)
 					{
 						// Finished fading => Start on the next image
+						
+						// Getting next image
 						tmp = getRandomImageNum();
+						// (doing this before removing to not get the same
+						// image twice)
+						
+						// Removing from images used
 						images_used.remove((Integer)imagenum_now[i][j]);
 						
+						// Setting the image that faded in to the now showing now
 						imagenum_now[i][j]  = imagenum_next[i][j];
 						imagenum_now2[i][j] = imagenum_next2[i][j];
+						fade[i][j] = 0.0f; // Will show imagenum_now2[i][j]
 						
-						imagenum_next[i][j] = tmp;
-						imagenum_next2[i][j] = getImage(tmp);
+						// Setting the next image to the one that are fading in
+						imagenum_next[i][j] = tmp; // Integer
+						imagenum_next2[i][j] = getImage(tmp); // Image
 						
+						// Adding the new image
 						images_used.add((Integer)imagenum_next[i][j]);
-						fade[i][j] = 0.0f;
+						
+						// Setting wait time
 						wait[i][j] = 10; // Number of frames to wait
 					}
 					else if (wait[i][j] <= 0)
