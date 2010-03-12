@@ -33,8 +33,13 @@ import com.sun.image.codec.jpeg.*;
  * - Pictures captures is saved with the current time and date
  * - Last pictures captured as shown more often than older once 
  *   (number of pictures considered last pictures is controlled by lastadded_max)
+ * - Pictures that are in use (fading out or fading in) is cached by the program
+ *   others are loaded from disk once its needed.
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
+ *
+ * 
+ * Program is tested with 256M heap size.
  * 
  * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Vitenfabrikken (part of Jærmuseet)
  * 
