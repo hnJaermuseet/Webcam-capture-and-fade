@@ -35,6 +35,7 @@ import com.sun.image.codec.jpeg.*;
  *   (number of pictures considered last pictures is controlled by lastadded_max)
  * - Pictures that are in use (fading out or fading in) is cached by the program
  *   others are loaded from disk once its needed.
+ * - Configurable amount of frames to hold a picture before changing to the next
  * - Blinking red border around new images. Color can be configured
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
@@ -93,6 +94,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	//public String saveDirectory = "l:\\webcamtest";
 	public String saveDirectory = "c:\\webcamtest";
+	
+	public int number_of_frames_showimage = 30; // Number of frames to hold the image before fading to next
 	
 	public int number_of_frames_redborder = 7; // Number of frames the red border should last
 	public Color color_redborder = Color.red; // Change the color of the "red" border
@@ -417,6 +420,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 
 					fade[i][j]            = 0.1f*i*j;
 					redborder[i][j]       = 0;
+					
+					wait[i][j]            = (int)(number_of_frames_showimage*Math.random());
 
 					imagenum_now2[i][j]   = getImage(imagenum_now[i][j]);
 					imagenum_next2[i][j]  = getImage(imagenum_next[i][j]);
@@ -563,7 +568,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 						images_used.add((Integer)imagenum_next[i][j]);
 						
 						// Setting wait time
-						wait[i][j] = 10; // Number of frames to wait
+						wait[i][j] = number_of_frames_showimage; // Number of frames to wait
 					}
 					else if (wait[i][j] <= 0)
 					{
