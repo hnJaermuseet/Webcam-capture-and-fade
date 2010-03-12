@@ -100,7 +100,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	public FormatControl formatControl;
 	
-	public String saveDirectory = "l:\\webcamtest";
+	// ## SETTINGS ##
+	//public String saveDirectory = "l:\\webcamtest";
+	public String saveDirectory = "c:\\webcamtest";
+	public int number_of_frames_redborder = 7;
 	
 	public Boolean gotImages = false;
 	
@@ -117,6 +120,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		getImages();
 		images_used = new ArrayList<Integer>();
 		images_lastadded = new ArrayList<Integer>();
+		images_nevershown = new ArrayList<Integer>();
 		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[4];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
@@ -267,8 +271,9 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 			// Remove last
 			images_lastadded.remove(images_lastadded.size()-1);
 		}
-		
+
 		images_lastadded.add(0, images.size()-1);
+		images_nevershown .add(0, images.size()-1);
 	}
 	
 	public void nextFrame() {
@@ -313,6 +318,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public int randomImageNum_maxTries = 100;
 	
 	public int lastImg = 0;
+	
+	public ArrayList<Integer> images_nevershown; // New images that are never shown before
 	
 	public int getRandomImageNum () {
 		if(images.size() == images_used.size())
@@ -364,7 +371,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		public int size_y;
 
 		public float[][] fade; // How much fading
-		public int[][] wait; // Counter for 
+		public int[][] wait; // Counter for wait time
+		public int[][] redborder; // Counter for red border on new images
 
 		public int[][]imagenum_now; // Images for the panel, showing now
 		public int[][]imagenum_next; // Images for the panel, fading in
@@ -389,6 +397,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 			imagenum_next2  = new Image[this.grid_x][this.grid_y];
 			fade = new float[this.grid_x][this.grid_y];
 			wait = new int[this.grid_x][this.grid_y];
+			redborder = new int[this.grid_x][this.grid_y];
 			
 			
 			for (int i = 0; i < imagenum_now.length; i++) {
@@ -397,8 +406,9 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 					images_used.add((Integer)imagenum_now[i][j]);
 					imagenum_next[i][j]   = getRandomImageNum();
 					images_used.add((Integer)imagenum_next[i][j]);
-					
+
 					fade[i][j]            = 0.1f*i*j;
+					redborder[i][j]       = 0;
 
 					imagenum_now2[i][j]   = getImage(imagenum_now[i][j]);
 					imagenum_next2[i][j]  = getImage(imagenum_next[i][j]);
@@ -428,6 +438,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 					//System.out.println("x: " + i + ", y: " + j);
 					
 					g2.setComposite(ac2);
+					
 					if(imagenum_now[i][j] != -1)
 					{
 						g2.drawImage(
@@ -483,6 +494,29 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 								" => " + 
 								imagenum_next[i][j] + ", fade: "+fade[i][j]);;
 					*/
+					
+					// Red border if the image is new
+					if(
+							images_nevershown.contains((Integer)imagenum_next[i][j]) ||
+							images_nevershown.contains((Integer)imagenum_now[i][j])
+						)
+					{
+						g2.setComposite(ac2);
+						g2.setColor(Color.red);
+						int bordertime = redborder[i][j];
+						if(bordertime > 0)
+						{
+							// Draw border
+							g2.drawRect(i*size_x, j*size_y, size_x-1, size_y-1);
+							
+							if(bordertime > number_of_frames_redborder)
+							{
+								// No more border
+								redborder[i][j] = -number_of_frames_redborder;
+							}
+						}
+						redborder[i][j]++;
+					}
 				}
 			}
 		}
@@ -504,6 +538,9 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 						
 						// Removing from images used
 						images_used.remove((Integer)imagenum_now[i][j]);
+						
+						// Removing from never shown since it now has been shown
+						images_nevershown.remove((Integer)imagenum_now[i][j]);
 						
 						// Setting the image that faded in to the now showing now
 						imagenum_now[i][j]  = imagenum_next[i][j];
