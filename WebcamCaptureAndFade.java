@@ -35,6 +35,7 @@ import com.sun.image.codec.jpeg.*;
  *   (number of pictures considered last pictures is controlled by lastadded_max)
  * - Pictures that are in use (fading out or fading in) is cached by the program
  *   others are loaded from disk once its needed.
+ * - Blinking red border around new images. Color can be configured
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
  *
@@ -87,6 +88,19 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	
+	// ## SETTINGS ##
+	
+	//public String saveDirectory = "l:\\webcamtest";
+	public String saveDirectory = "c:\\webcamtest";
+	
+	public int number_of_frames_redborder = 7; // Number of frames the red border should last
+	public Color color_redborder = Color.red; // Change the color of the "red" border
+	
+	
+	
+	// ## OTHER STUFF ##
+	// (no need to change any here ;-)
 	public static Player player;
 	public CaptureDeviceInfo di;
 	public MediaLocator ml;
@@ -99,12 +113,6 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public JPanel buttonpanel;
 	
 	public FormatControl formatControl;
-	
-	// ## SETTINGS ##
-	//public String saveDirectory = "l:\\webcamtest";
-	public String saveDirectory = "c:\\webcamtest";
-	public int number_of_frames_redborder = 7;
-	
 	public Boolean gotImages = false;
 	
 	public WebcamCaptureAndFadeImagePanel[] imagepanels;
@@ -502,7 +510,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 						)
 					{
 						g2.setComposite(ac2);
-						g2.setColor(Color.red);
+						g2.setColor(color_redborder);
 						int bordertime = redborder[i][j];
 						if(bordertime > 0)
 						{
