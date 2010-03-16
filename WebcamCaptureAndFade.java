@@ -45,7 +45,11 @@ import com.sun.image.codec.jpeg.*;
  * 
  * Remember to install Java Media Framework.
  * 
- * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Vitenfabrikken (part of Jærmuseet)
+ * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Jærmuseet / Vitenfabrikken.
+ * 
+ * License:
+ * CC-BY-SA: Creative Commons Attribution-Share Alike 3.0 Norway License
+ * http://creativecommons.org/licenses/by-sa/3.0/no/
  * 
  * @author Jærmuseet / Vitenfabrikken, Hallvard Nygård <hn@jaermuseet.no>
  *
