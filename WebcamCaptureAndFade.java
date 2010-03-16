@@ -36,7 +36,7 @@ import com.sun.image.codec.jpeg.*;
  * - Pictures that are in use (fading out or fading in) is cached by the program
  *   others are loaded from disk once its needed.
  * - Configurable amount of frames to hold a picture before changing to the next
- * - Blinking red border around new images. Color can be configured
+ * - Optional blinking red border around new images. Color can be configured.
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
  *
@@ -103,7 +103,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	public int number_of_frames_showimage = 30; // Number of frames to hold the image before fading to next
 	
-	public int number_of_frames_redborder = 7; // Number of frames the red border should last
+	public int number_of_frames_redborder = 7; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
 	
 	public boolean captureWindow; // Open captureWindow when pressing the capture key
@@ -249,6 +249,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		add(imagepanels[0]);
 		
 		captureWindow = true;
+		number_of_frames_redborder = -1;
 	}
 	
 	protected void getImages() {
@@ -562,8 +563,11 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 					
 					// Red border if the image is new
 					if(
-							images_nevershown.contains((Integer)imagenum_next[i][j]) ||
-							images_nevershown.contains((Integer)imagenum_now[i][j])
+							number_of_frames_redborder != -1 &&
+							(
+								images_nevershown.contains((Integer)imagenum_next[i][j]) ||
+								images_nevershown.contains((Integer)imagenum_now[i][j])
+							)
 						)
 					{
 						g2.setComposite(ac2);
