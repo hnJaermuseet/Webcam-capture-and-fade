@@ -820,6 +820,13 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 				captureImage();
 				cw.setVisible(false);
 			}
+			
+			else if(arg0.getKeyCode() == 27) // Escape
+			{
+				System.out.println("Escape pressed, exiting");
+				System.exit(0);
+			}
+			
 		}
 
 		@Override
