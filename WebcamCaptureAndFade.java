@@ -41,7 +41,9 @@ import com.sun.image.codec.jpeg.*;
  * - Debug by pressing t, y or u (more can be added in keyPressed())
  *
  * 
- * Program is tested with 256M heap size.
+ * Program is tested with 256M heap size on Windows XP and Windows 7.
+ * 
+ * Remember to install Java Media Framework.
  * 
  * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Vitenfabrikken (part of Jærmuseet)
  * 
