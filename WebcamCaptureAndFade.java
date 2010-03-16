@@ -95,7 +95,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	// ## SETTINGS ##
 	
 	//public String saveDirectory = "l:\\webcamtest";
-	public String saveDirectory = "c:\\webcamtest";
+	public String saveDirectory = "d:\\webcamtest";
 	
 	public int number_of_frames_showimage = 30; // Number of frames to hold the image before fading to next
 	
