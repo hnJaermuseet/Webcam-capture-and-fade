@@ -68,20 +68,13 @@ public class WebcamCaptureAndFade {
 				"made by Hallvard Nygard - " +
 				"Vitenfabrikken.no");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.setUndecorated(true);
 		
 		WebcamCaptureAndFadePanel panel = new WebcamCaptureAndFadePanel();
 		frame.getContentPane().add(panel);
 		frame.addKeyListener(panel);
 		frame.pack();
-		
-		//frame.setUndecorated(true);
-		
-		// Fullscreen:
-		/*GraphicsEnvironment.
-			getLocalGraphicsEnvironment().
-			getDefaultScreenDevice().
-			setFullScreenWindow(frame);*/
-		
 		
 		frame.setVisible(true);
 		
@@ -199,10 +192,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		layout1024();
 		
 		// Capture Window
-		cw = new JFrame();
+		cw = new JFrame("Capture from webcam");
 		cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
 		cw.addKeyListener(new captureWindowKeyListner());
-		
+		cw.setUndecorated(true);
 		if ((comp = player.getVisualComponent()) != null) {
 			cw.add(comp);
 		}
