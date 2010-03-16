@@ -266,6 +266,11 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	public Image getImage(int imagenum)
 	{
+		if(imagenum == -1)
+		{
+			return null;
+		}
+		
 		String path = images.get(imagenum);
 		try {
 			return ImageIO.read(new File(path));
@@ -360,7 +365,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public ArrayList<Integer> images_nevershown; // New images that are never shown before
 	
 	public int getRandomImageNum () {
-		if(images.size() == images_used.size())
+		if(images.size() <= images_used.size())
 			return -1;
 		else
 		{
@@ -449,7 +454,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 					redborder[i][j]       = 0;
 					
 					wait[i][j]            = (int)(number_of_frames_showimage*Math.random());
-
+					
 					imagenum_now2[i][j]   = getImage(imagenum_now[i][j]);
 					imagenum_next2[i][j]  = getImage(imagenum_next[i][j]);
 				}
