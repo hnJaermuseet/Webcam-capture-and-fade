@@ -116,6 +116,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public VideoFormat vf;
 	public BufferToImage btoi;
 	public JPanel buttonpanel;
+	protected Component comp;
 	
 	public FormatControl formatControl;
 	public Boolean gotImages = false;
@@ -135,18 +136,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		images_lastadded = new ArrayList<Integer>();
 		images_nevershown = new ArrayList<Integer>();
 		
-		imagepanels = new WebcamCaptureAndFadeImagePanel[4];
-		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
-		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
-		imagepanels[2] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
-		imagepanels[3] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
-
 		//String str1 = "vfw:Logitech USB Video Camera:0";
 		String str2 = "vfw:Microsoft WDM Image Capture (Win32):0";
 		di = CaptureDeviceManager.getDevice(str2);
 		ml = di.getLocator();
-		
-		Component comp;
 		
 		try {
 			player = Manager.createRealizedPlayer(ml);
@@ -182,6 +175,23 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		 * - comp
 		 * - imagepanels
 		 */
+		//layout1280();
+		layout1024();
+		
+		/*
+		 * Thread
+		 */
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	protected void layout1280 () {
+		imagepanels = new WebcamCaptureAndFadeImagePanel[4];
+		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
+		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
+		imagepanels[2] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
+		imagepanels[3] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
+		
 		setLayout(new BorderLayout());
 		setSize((4+2+4)*size_x, (6)*size_y);
 		
@@ -197,13 +207,28 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		add(middle, BorderLayout.CENTER);
 		
 		add(imagepanels[3], BorderLayout.EAST);
+	}
+
+	protected void layout1024 () {
+		imagepanels = new WebcamCaptureAndFadeImagePanel[2];
+		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(2,2, size_x, size_y);
+		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,2, size_x, size_y);
 		
+		setLayout(new BorderLayout());
+		setSize((2)*size_x, (6)*size_y);
 		
-		/*
-		 * Thread
-		 */
-		Thread thread = new Thread(this);
-		thread.start();
+		add(imagepanels[0],	BorderLayout.WEST);
+		
+		JPanel middle = new JPanel(new BorderLayout());
+		//middle.add(imagepanels[1], BorderLayout.NORTH);
+		if ((comp = player.getVisualComponent()) != null) {
+			middle.add(comp, BorderLayout.CENTER);
+		}
+		//middle.add(imagepanels[2], BorderLayout.SOUTH);
+		middle.setSize(new Dimension(4*size_x, 2*size_y));
+		add(middle, BorderLayout.CENTER);
+		
+		add(imagepanels[1], BorderLayout.EAST);
 	}
 	
 	protected void getImages() {
