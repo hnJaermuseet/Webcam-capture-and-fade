@@ -106,6 +106,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public int number_of_frames_redborder = 7; // Number of frames the red border should last
 	public Color color_redborder = Color.red; // Change the color of the "red" border
 	
+	public boolean captureWindow; // Open captureWindow when pressing the capture key
 	
 	
 	// ## OTHER STUFF ##
@@ -121,6 +122,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public BufferToImage btoi;
 	public JPanel buttonpanel;
 	protected Component comp;
+	JFrame cw;
 	
 	public FormatControl formatControl;
 	public Boolean gotImages = false;
@@ -128,12 +130,26 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public WebcamCaptureAndFadeImagePanel[] imagepanels;
 	
 	public int size_x, size_y;
+	public int sizeCaptureWindow_x, sizeCaptureWindow_y;
 	
 	public WebcamCaptureAndFadePanel() {
 		
 		// Resolution of the camera pictures divided by 2
+		
+		// 320x240, Creative camera for layout1280
+		/*
 		size_x = 320/2;
 		size_y = 240/2;
+		sizeCaptureWindow_x = size_x*2;
+		sizeCaptureWindow_y = size_y*2;
+		*/
+		
+		// 640x480, Creative camera for layout1024
+		size_x = 1024;
+		size_y = 768;
+		sizeCaptureWindow_x = 680;
+		sizeCaptureWindow_y = 480;
+		
 		
 		getImages();
 		images_used = new ArrayList<Integer>();
@@ -182,6 +198,15 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		//layout1280();
 		layout1024();
 		
+		// Capture Window
+		cw = new JFrame();
+		cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
+		cw.addKeyListener(new captureWindowKeyListner());
+		
+		if ((comp = player.getVisualComponent()) != null) {
+			cw.add(comp);
+		}
+		
 		/*
 		 * Thread
 		 */
@@ -211,28 +236,19 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		add(middle, BorderLayout.CENTER);
 		
 		add(imagepanels[3], BorderLayout.EAST);
+		
+		captureWindow = false;
 	}
 
 	protected void layout1024 () {
-		imagepanels = new WebcamCaptureAndFadeImagePanel[2];
-		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(2,2, size_x, size_y);
-		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,2, size_x, size_y);
+		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
+		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1, size_x, size_y);
 		
-		setLayout(new BorderLayout());
-		setSize((2)*size_x, (6)*size_y);
+		setSize(size_x, size_y);
 		
-		add(imagepanels[0],	BorderLayout.WEST);
+		add(imagepanels[0]);
 		
-		JPanel middle = new JPanel(new BorderLayout());
-		//middle.add(imagepanels[1], BorderLayout.NORTH);
-		if ((comp = player.getVisualComponent()) != null) {
-			middle.add(comp, BorderLayout.CENTER);
-		}
-		//middle.add(imagepanels[2], BorderLayout.SOUTH);
-		middle.setSize(new Dimension(4*size_x, 2*size_y));
-		add(middle, BorderLayout.CENTER);
-		
-		add(imagepanels[1], BorderLayout.EAST);
+		captureWindow = true;
 	}
 	
 	protected void getImages() {
@@ -639,7 +655,14 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == 67) // C 
 		{
-			this.captureImage();
+			if(captureWindow)
+			{
+				this.openCaptureWindow();
+			}
+			else
+			{
+				this.captureImage();
+			}
 		}
 		
 		else if(e.getKeyCode() == 27) // Escape
@@ -775,5 +798,33 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	{
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 		return sdf.format(Calendar.getInstance().getTime());
+	}
+	
+	public void openCaptureWindow ()
+	{
+		// Capture Window
+		cw.setVisible(true);
+	}
+	
+	public class captureWindowKeyListner implements KeyListener
+	{
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			if(arg0.getKeyCode() == 67) // C 
+			{
+				captureImage();
+				cw.setVisible(false);
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+		}
+		
 	}
 }
