@@ -10,6 +10,7 @@ import javax.media.util.*;
 import javax.media.control.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Timer;
 import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -82,7 +83,7 @@ public class WebcamCaptureAndFade {
 	}
 }
 
-class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable {
+class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	/**
 	 * 
 	 */
@@ -90,6 +91,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	
 	// ## SETTINGS ##
+	
+	public int fps = 30; // Frames per second
 	
 	//public String saveDirectory = "l:\\webcamtest";
 	public String saveDirectory = "d:\\webcamtest";
@@ -208,10 +211,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		}
 		
 		/*
-		 * Thread
+		 * Timer for update
 		 */
-		Thread thread = new Thread(this);
-		thread.start();
+		Timer thread = new Timer();
+		thread.schedule(new frameUpdateTask(), 0, (1000/fps));
 	}
 
 	protected void layout1280 () {
@@ -646,17 +649,14 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		}
 		
 	}
-
-	@Override
-	public void run() {
-		while (true) {
-			this.nextFrame();
-			
-			
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException ex) {
-			}
+	
+	public int framenr = 0;
+	public class frameUpdateTask extends TimerTask
+	{
+		@Override
+		public void run() {
+			framenr++;
+			nextFrame();
 		}
 	}
 
