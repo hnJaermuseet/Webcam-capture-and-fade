@@ -99,6 +99,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	
 	// X * fps = x seconds
+	public int number_of_frames_betweencaptures = 5*fps; // Number of frame to wait between captures 
 	public int number_of_frames_showimage = 4*fps; // Number of frames to hold the image before fading to next
 	public int number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
@@ -120,6 +121,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public JPanel buttonpanel;
 	protected Component comp;
 	JFrame cw;
+	public int lastcapture_framenr;
 	
 	public FormatControl formatControl;
 	public Boolean gotImages = false;
@@ -823,8 +825,23 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		public void keyPressed(KeyEvent arg0) {
 			if(arg0.getKeyCode() == 67) // C 
 			{
-				captureImage();
-				cw.setVisible(false);
+				// Are we allowed to capture a new image?
+				if(framenr - lastcapture_framenr > number_of_frames_betweencaptures)
+				{
+					captureImage();
+					cw.setVisible(false);
+					lastcapture_framenr = framenr;
+				}
+				else
+				{
+					// Temp
+					// TODO: fix text over image
+					//System.out.println("At framenr " + framenr + ", " + (framenr-lastcapture_framenr) +
+					//		"frames has passed, should be " +number_of_frames_betweencaptures);
+					System.out.println("You must wait an other "+
+							(int)Math.ceil(((double)number_of_frames_betweencaptures-(double)(framenr-lastcapture_framenr))/fps) +
+							" seconds");
+				}
 			}
 			
 			else if(arg0.getKeyCode() == 27) // Escape
