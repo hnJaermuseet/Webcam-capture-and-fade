@@ -124,6 +124,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 	
 	public int size_x, size_y;
 	public int sizeCaptureWindow_x, sizeCaptureWindow_y;
+	public int cwLocation_x, cwLocation_y;
 	
 	public WebcamCaptureAndFadePanel() {
 		
@@ -142,6 +143,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		size_y = 768;
 		sizeCaptureWindow_x = 680;
 		sizeCaptureWindow_y = 480;
+		cwLocation_x = cwLocation_y = 0;
 		
 		
 		getImages();
@@ -188,16 +190,21 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		 * - comp
 		 * - imagepanels
 		 */
+
 		//layout1280();
 		layout1024();
 		
 		// Capture Window
-		cw = new JFrame("Capture from webcam");
-		cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
-		cw.addKeyListener(new captureWindowKeyListner());
-		cw.setUndecorated(true);
-		if ((comp = player.getVisualComponent()) != null) {
-			cw.add(comp);
+		if(captureWindow)
+		{
+			cw = new JFrame("Capture from webcam");
+			cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
+			cw.addKeyListener(new captureWindowKeyListner());
+			cw.setUndecorated(true);
+			if ((comp = player.getVisualComponent()) != null) {
+				cw.add(comp);
+			}
+			cw.setLocation(cwLocation_x, cwLocation_y);
 		}
 		
 		/*
@@ -239,10 +246,15 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener, Runnable 
 		
 		setSize(size_x, size_y);
 		
+		this.setLayout(new GridLayout(1,1));
 		add(imagepanels[0]);
 		
 		captureWindow = true;
 		number_of_frames_redborder = -1;
+		
+		// Set capture window at center of the screen
+		cwLocation_x = (size_x / 2)-(sizeCaptureWindow_x/2);
+		cwLocation_y = (size_y / 2)-(sizeCaptureWindow_y/2);
 	}
 	
 	protected void getImages() {
