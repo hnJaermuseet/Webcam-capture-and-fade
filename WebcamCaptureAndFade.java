@@ -122,6 +122,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	protected Component comp;
 	JFrame cw;
 	public int lastcapture_framenr;
+	public JLabel cwText;
 	
 	public FormatControl formatControl;
 	public Boolean gotImages = false;
@@ -207,9 +208,23 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
 			cw.addKeyListener(new captureWindowKeyListner());
 			cw.setUndecorated(true);
+			JPanel cwPanel = new JPanel();
+			LayoutManager overlay = new OverlayLayout(cwPanel);
+			cwPanel.setLayout(overlay);
+			
+			// Text label over the webcam
+			cwText = new JLabel("");
+			cwPanel.add(cwText);
+			cwText.setAlignmentX(1);
+			cwText.setAlignmentY(0);
+			
+			// Add webcam
 			if ((comp = player.getVisualComponent()) != null) {
-				cw.add(comp);
+				cwPanel.add(comp);
 			}
+			
+			// Add panel to window and set location of window
+			cw.add(cwPanel);
 			cw.setLocation(cwLocation_x, cwLocation_y);
 		}
 		
