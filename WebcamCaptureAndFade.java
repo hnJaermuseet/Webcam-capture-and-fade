@@ -97,9 +97,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	//public String saveDirectory = "l:\\webcamtest";
 	public String saveDirectory = "d:\\webcamtest";
 	
-	public int number_of_frames_showimage = 30; // Number of frames to hold the image before fading to next
 	
-	public int number_of_frames_redborder = 7; // Number of frames the red border should last, -1 to disable
+	// X * fps = x seconds
+	public int number_of_frames_showimage = 4*fps; // Number of frames to hold the image before fading to next
+	public int number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
 	
 	public boolean captureWindow; // Open captureWindow when pressing the capture key
