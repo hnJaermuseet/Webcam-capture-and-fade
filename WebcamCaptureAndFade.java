@@ -27,17 +27,23 @@ import com.sun.image.codec.jpeg.*;
  * It captures images from a normal webcamera in Windows and fades between
  * the captured images.
  * 
- * The program is made February/March for 2010 for the exhibition "Kem e Sandnes?"
- * ("Who is Sandnes?"). The exhibition will be/is opened on 14th of April.
+ * The program is made during the spring of 2010 for the exhibition "Kem e Sandnes?"
+ * ("Who is Sandnes?"). The exhibition will be/is opened on 14th of April by the
+ * queen of Norway.
  *
  *
  * Some features:
- * - A picture is only shown once in the fading images
+ * - A picture is only shown once in the fading images (layout1280())
  * - Pictures captures is saved with the current time and date
  * - Last pictures captured as shown more often than older once 
- *   (number of pictures considered last pictures is controlled by lastadded_max)
- * - Pictures that are in use (fading out or fading in) is cached by the program
- *   others are loaded from disk once its needed.
+ *   (number of pictures considered last pictures is controlled by lastadded_max,
+ *   percentage of new images vs old images is given by percentage_of_new_images)
+ * - Newly captured images are, with layout1024(), force to be the next image to 
+ *   fade to if the image is not fading at the moment.
+ * - 5 seconds between each captured image
+ * - Pictures that are in use (fading out or fading in) is cached by the program.
+ *   Others are loaded from disk once its needed.
+ * - Timeout for capture window
  * - Configurable amount of frames to hold a picture before changing to the next
  * - Optional blinking red border around new images. Color can be configured.
  * - With no camera connected, the program won't start (gives a error message)
