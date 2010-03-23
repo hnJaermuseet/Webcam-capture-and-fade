@@ -841,7 +841,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 				{
 					captureImage();
 					cw.setVisible(false);
-					timer.cancel();
+					if(timer != null)
+						timer.cancel();
 					cwText.setText(""); // Empty text
 					lastcapture_framenr = framenr;
 				}
