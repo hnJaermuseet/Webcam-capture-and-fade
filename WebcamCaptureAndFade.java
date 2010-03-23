@@ -1,8 +1,10 @@
+
 package webcamCaptureAndFade;
 
 import javax.swing.*;
 
 import java.io.*;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.media.*;
@@ -48,6 +50,8 @@ import com.sun.image.codec.jpeg.*;
  * - Optional blinking red border around new images. Color can be configured.
  * - With no camera connected, the program won't start (gives a error message)
  * - Debug by pressing t, y or u (more can be added in keyPressed())
+ * - Border around the pictures (layout1024())
+ * - Date of the picture in lower right corner (layout1024())
  *
  * 
  * Program is tested with 256M heap size on Windows XP and Windows 7.
@@ -142,6 +146,9 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public int size_x, size_y;
 	public int sizeCaptureWindow_x, sizeCaptureWindow_y;
 	public int cwLocation_x, cwLocation_y;
+	
+	public boolean enable_datetext;
+	public rotatedText2 datetext;
 	
 	public boolean enable_forceNewImage;
 	
@@ -254,6 +261,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		
 		add(imagepanels[3], BorderLayout.EAST);
 		
+		enable_datetext = false;
 		enable_forceNewImage = false;
 		captureWindow = false;
 	}
@@ -267,15 +275,53 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		sizeCaptureWindow_y = 480;
 		cwLocation_x = cwLocation_y = 0;
 		
+		// Borders in relation to a normal screen (not the rotated)
+		int border_top, border_left, border_right, border_bottom;
+		border_top = border_bottom = border_left = 50; // Top, left, right when rotated
+		border_right = 80;
+		
 		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1, size_x, size_y);
 		
-		setSize(size_x, size_y);
+		//setSize(size_x, size_y);
 		
-		setLayout(new GridLayout(1,1));
+		setLayout(null);
+		
+		JComponent jcomp = new JComponent(){
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void paintComponent(Graphics g) {
+				
+				Graphics2D g2 = (Graphics2D)g;
+				
+				g2.setColor(Color.white);
+				g2.fillRect(0, 0, size_x, size_y);
+				
+				super.paintComponent(g);
+			}
+		};
+		datetext = new rotatedText2 ("");
+		
+		add(datetext);
+		datetext.setBounds(size_x-25, 10, 40, 100);
+		
+		add(jcomp);
+		jcomp.setBounds(0, 0, size_x, size_y);
+		
+		
 		add(imagepanels[0]);
+		imagepanels[0].setBounds(
+				border_top, border_left, 
+				size_x-border_right-border_left,
+				size_y-border_top-border_bottom);
 		
+		enable_datetext = true;
 		enable_forceNewImage = true;
 		captureWindow = true;
 		number_of_frames_redborder = -1;
@@ -283,6 +329,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		// Set capture window at center of the screen
 		cwLocation_x = (size_x / 2)-(sizeCaptureWindow_x/2);
 		cwLocation_y = (size_y / 2)-(sizeCaptureWindow_y/2);
+		
+		setSize(size_x, size_y);
+		setBounds(0, 0, 200, 200);
+		setPreferredSize(new Dimension(size_x,size_y));
 	}
 	
 	protected void getImages() {
@@ -698,6 +748,22 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 					else if (wait[i][j] <= 0)
 					{
 						fade[i][j] += 0.05f;
+						if(
+								enable_datetext && 
+								fade[i][j] > 0.50f && 
+								imagenum_next[i][j] != -1)
+						{
+							String path = images.get(imagenum_next[i][j]);
+							if(path.lastIndexOf("cam") != -1)
+							{
+								path = path.substring(path.lastIndexOf("cam")+3);
+								//20100309
+								datetext.setText(
+										path.substring(6, 8) + "." +
+										path.substring(4, 6) + "." +
+										path.substring(0, 4));
+							}
+						}
 					}
 					else
 					{
@@ -1103,6 +1169,65 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			public int getWidth () {
 				return this.getSize().width;
 			}
+		}
+	}
+	
+	public class rotatedText2 extends JComponent
+	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private boolean rotate = false;
+		
+		public String text;
+		protected JComponent textlabel;
+		
+		public rotatedText2 (String text) {
+			this.setText(text);
+		}
+		
+		public void setText (String txt)
+		{
+			text = txt;
+			repaint();
+		}
+		
+		public void paintComponent (Graphics g)
+		{
+			super.paintComponent(g);
+			
+			Graphics2D g2 = (Graphics2D)g;
+			
+			if(!text.equals(""))
+			{
+			g2.translate(0, getSize().getHeight());
+				g2.rotate(-Math.PI/2);
+				g2.setColor(Color.black);
+				g2.drawString(text, 20, 14);
+	
+				g2.translate(0, -getSize().getHeight());
+				g2.transform(AffineTransform.getQuadrantRotateInstance(1));
+			}
+		}
+		
+		public Dimension getSize() {
+			if(rotate)
+				return new Dimension(super.getSize().height, super.getSize().width);
+			else
+				return super.getSize();
+		}
+		
+		public Dimension getPreferredSize()
+		{
+			return this.getSize();
+		}
+
+		public int getHeight () {
+			return this.getSize().height;
+		}
+		public int getWidth () {
+			return this.getSize().width;
 		}
 	}
 }
