@@ -108,6 +108,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public boolean captureWindow; // Open captureWindow when pressing the capture key
 	
+	public int percentage_of_new_images = 50; // 50%
 	
 	// ## OTHER STUFF ##
 	// (no need to change any here ;-)
@@ -411,15 +412,40 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			return -1;
 		else
 		{
+			// Calculate, based on random, if we try to get from the new images
+			boolean getFromNewImages;
+			if(Math.random()*100 < percentage_of_new_images)
+			{
+				getFromNewImages = true;
+			}
+			else
+			{
+				getFromNewImages = false;
+			}
+			
 			int i;
 			int j = 0;
-			int tries = 0; 
+			int tries = 0;
 			while(true && tries < randomImageNum_maxTries)
 			{
 				// Always try the last added pictures
-				if (j < images_lastadded.size())
+				if (
+						images_nevershown.size() > 0 &&
+						tries < (int)(randomImageNum_maxTries/4) // Only use 1/4 of the tries here
+					)
 				{
-					i = images_lastadded.get(j++);
+					i = images_nevershown.get(0);
+					tries++;
+				}
+				else if (
+						getFromNewImages &&
+						images_lastadded.size() > 0 &&
+						tries < (int)(randomImageNum_maxTries/2) // Only use 1/2 of the tries here
+					)
+				{
+					j = (int)(images_lastadded.size() * Math.random());
+					i = images_lastadded.get(j);
+					tries++;
 				}
 				else
 				{
