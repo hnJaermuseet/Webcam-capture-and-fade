@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.awt.event.*;
 
@@ -122,7 +123,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	protected Component comp;
 	JFrame cw;
 	public int lastcapture_framenr;
-	public JLabel cwText;
+	public rotatedText cwText;
 	
 	public FormatControl formatControl;
 	public Boolean gotImages = false;
@@ -208,25 +209,18 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
 			cw.addKeyListener(new captureWindowKeyListner());
 			cw.setUndecorated(true);
-			JPanel cwPanel = new JPanel();
-			LayoutManager overlay = new OverlayLayout(cwPanel);
-			cwPanel.setLayout(overlay);
-			
-			// Text label over the webcam
-			cwText = new JLabel("");
-			cwPanel.add(cwText);
-			cwText.setAlignmentX(1);
-			cwText.setAlignmentY(0);
 			
 			// Add webcam
 			if ((comp = player.getVisualComponent()) != null) {
-				cwPanel.add(comp);
+				cw.add(comp);
 			}
 			
 			// Add panel to window and set location of window
-			cw.add(cwPanel);
 			cw.setLocation(cwLocation_x, cwLocation_y);
 		}
+		
+		// Text window
+		cwText = new rotatedText("");
 		
 		/*
 		 * Timer for update
@@ -267,7 +261,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		
 		setSize(size_x, size_y);
 		
-		this.setLayout(new GridLayout(1,1));
+		setLayout(new GridLayout(1,1));
 		add(imagepanels[0]);
 		
 		captureWindow = true;
@@ -835,7 +829,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public class captureWindowKeyListner implements KeyListener
 	{
-
+		Timer timer;
+		
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			if(arg0.getKeyCode() == 67) // C 
@@ -845,17 +840,47 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 				{
 					captureImage();
 					cw.setVisible(false);
+					timer.cancel();
+					cwText.setText(""); // Empty text
 					lastcapture_framenr = framenr;
 				}
 				else
 				{
-					// Temp
-					// TODO: fix text over image
+					//Console debug:
 					//System.out.println("At framenr " + framenr + ", " + (framenr-lastcapture_framenr) +
 					//		"frames has passed, should be " +number_of_frames_betweencaptures);
-					System.out.println("You must wait an other "+
-							(int)Math.ceil(((double)number_of_frames_betweencaptures-(double)(framenr-lastcapture_framenr))/fps) +
-							" seconds");
+					//System.out.println("You must wait an other "+
+					//		(int)Math.ceil(((double)number_of_frames_betweencaptures-(double)(framenr-lastcapture_framenr))/fps) +
+					//		" seconds");
+					
+					TimerTask task = new TimerTask () {
+						
+						boolean finished = false;
+						
+						@Override
+						public void run() {
+							EventQueue.invokeLater(new Runnable() {
+								public void run() {
+									if(!finished)
+									{
+										if((int)Math.ceil(((double)number_of_frames_betweencaptures-(double)(framenr-lastcapture_framenr))/fps) > 0)
+										{
+											cwText.setText("Du må vente "+
+													(int)Math.ceil(((double)number_of_frames_betweencaptures-(double)(framenr-lastcapture_framenr))/fps) +
+													" sekunder før nytt bilde");
+										}
+										else
+										{
+											finished = true;
+											cwText.setText("Du kan nå ta bilde");
+										}
+									}
+								}
+							});
+						}
+					};
+					timer = new Timer();
+					timer.schedule(task, 0, (1000/fps)); // Update for every frame
 				}
 			}
 			
@@ -875,5 +900,103 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		public void keyTyped(KeyEvent arg0) {
 		}
 		
+	}
+	
+	public class rotatedText extends JFrame
+	{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private boolean rotate = false;
+		
+		public String text;
+		protected JComponent textlabel;
+		
+		public int sizeText_x = 18;
+		public int sizeText_y = size_y;
+		
+		public rotatedText (String text) {
+			
+			textlabel = new rotatedTextLabel();
+			add(textlabel);
+			
+			setSize(sizeText_x, sizeText_y);
+			setUndecorated(true);
+			
+			this.setText(text);
+		}
+		
+		public void setText (String txt)
+		{
+			text = txt;
+			textlabel.repaint();
+			if(!text.equals(""))
+			{
+				if(!isVisible())
+				{
+					// Only setVisible if its needed
+					// or the focus window will change
+					setVisible(true);
+				}
+				
+				// Give focus to capture window if its there
+				if(cw.isVisible())
+					cw.requestFocus();
+			}
+			else
+			{
+				// Hide window
+				setVisible(false);
+			}
+		}
+		
+		public class rotatedTextLabel extends JComponent
+		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			
+			public void paintComponent (Graphics g)
+			{
+				super.paintComponent(g);
+				
+				Graphics2D g2 = (Graphics2D)g;
+				
+				if(!text.equals(""))
+				{
+				g2.translate(0, getSize().getHeight());
+					g2.rotate(-Math.PI/2);
+					g2.setColor(Color.red);
+					g2.fillRect(0, 0, sizeText_y, sizeText_x);
+					g2.setColor(Color.white);
+					g2.drawString(text, 20, 14);
+		
+					g2.translate(0, -getSize().getHeight());
+					g2.transform(AffineTransform.getQuadrantRotateInstance(1));
+				}
+			}
+			
+			public Dimension getSize() {
+				if(rotate)
+					return new Dimension(super.getSize().height, super.getSize().width);
+				else
+					return super.getSize();
+			}
+			
+			public Dimension getPreferredSize()
+			{
+				return this.getSize();
+			}
+
+			public int getHeight () {
+				return this.getSize().height;
+			}
+			public int getWidth () {
+				return this.getSize().width;
+			}
+		}
 	}
 }
