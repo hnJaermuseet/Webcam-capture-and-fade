@@ -1,6 +1,7 @@
 package webcamCaptureAndFade;
 
 import javax.swing.*;
+
 import java.io.*;
 
 import javax.imageio.ImageIO;
@@ -872,7 +873,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 										else
 										{
 											finished = true;
-											cwText.setText("Du kan nå ta bilde");
+											cwText.setText("Du kan nå ta nytt bilde");
 										}
 									}
 								}
