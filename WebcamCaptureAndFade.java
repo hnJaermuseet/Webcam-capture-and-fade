@@ -140,24 +140,6 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public WebcamCaptureAndFadePanel() {
 		
-		// Resolution of the camera pictures divided by 2
-		
-		// 320x240, Creative camera for layout1280
-		/*
-		size_x = 320/2;
-		size_y = 240/2;
-		sizeCaptureWindow_x = size_x*2;
-		sizeCaptureWindow_y = size_y*2;
-		*/
-		
-		// 640x480, Creative camera for layout1024
-		size_x = 1024;
-		size_y = 768;
-		sizeCaptureWindow_x = 680;
-		sizeCaptureWindow_y = 480;
-		cwLocation_x = cwLocation_y = 0;
-		
-		
 		getImages();
 		images_used = new ArrayList<Integer>();
 		images_lastadded = new ArrayList<Integer>();
@@ -234,6 +216,15 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	}
 
 	protected void layout1280 () {
+		// Resolution of the camera pictures divided by 2
+		
+		// 320x240, Creative camera for layout1280
+		size_x = 320/2;
+		size_y = 240/2;
+		sizeCaptureWindow_x = size_x*2;
+		sizeCaptureWindow_y = size_y*2;
+		
+		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[4];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(3,8, size_x, size_y);
 		imagepanels[1] = new WebcamCaptureAndFadeImagePanel(2,3, size_x, size_y);
@@ -261,6 +252,15 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	}
 
 	protected void layout1024 () {
+
+		// 640x480, Creative camera for layout1024
+		size_x = 1024;
+		size_y = 768;
+		sizeCaptureWindow_x = 680;
+		sizeCaptureWindow_y = 480;
+		cwLocation_x = cwLocation_y = 0;
+		
+		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1, size_x, size_y);
 		
