@@ -136,6 +136,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public int sizeCaptureWindow_x, sizeCaptureWindow_y;
 	public int cwLocation_x, cwLocation_y;
 	
+	public boolean enable_forceNewImage;
+	
 	public WebcamCaptureAndFadePanel() {
 		
 		// Resolution of the camera pictures divided by 2
@@ -254,6 +256,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		
 		add(imagepanels[3], BorderLayout.EAST);
 		
+		enable_forceNewImage = false;
 		captureWindow = false;
 	}
 
@@ -266,6 +269,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		setLayout(new GridLayout(1,1));
 		add(imagepanels[0]);
 		
+		enable_forceNewImage = true;
 		captureWindow = true;
 		number_of_frames_redborder = -1;
 		
@@ -360,11 +364,22 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 
 		images_lastadded.add(0, images.size()-1);
 		images_nevershown .add(0, images.size()-1);
+		
+		forceNewImage();
 	}
 	
 	public void nextFrame() {
 		for (int i = 0; i < imagepanels.length; i++) {
 			imagepanels[i].nextFrame();
+		}
+	}
+	
+	public void forceNewImage() {
+		if(enable_forceNewImage)
+		{
+			for (int i = 0; i < imagepanels.length; i++) {
+				imagepanels[i].forceNewImage();
+			}
 		}
 	}
 
@@ -687,6 +702,43 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			repaint();
 		}
 		
+		/**
+		 * Forces a new image if one of the images are not doing a fade
+		 */
+		public void forceNewImage()
+		{
+			int tmp;
+			boolean foundNew = false;
+			for (int i = 0; i < imagenum_next.length; i++) {
+				
+				for (int j = 0; j < imagenum_next[i].length; j++) {
+					
+					if(!foundNew && wait[i][j] > 0)
+					{
+						// Not fading => switch the next image with a new one
+						
+						// Getting next image
+						tmp = getRandomImageNum();
+						// (doing this before removing to not get the same
+						// image twice)
+						
+						// Removing from images used
+						images_used.remove((Integer)imagenum_next[i][j]);
+						
+						// Setting the next image to the one that are fading in
+						imagenum_next[i][j] = tmp; // Integer
+						imagenum_next2[i][j] = getImage(tmp); // Image
+						
+						// Adding the new image
+						images_used.add((Integer)imagenum_next[i][j]);
+						
+						foundNew = true;
+					}
+					
+				}
+			}
+			repaint();
+		}
 	}
 	
 	public int framenr = 0;
