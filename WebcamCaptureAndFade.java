@@ -308,12 +308,16 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		
 		// Borders in relation to a normal screen (not the rotated)
 		int border_top, border_left, border_right, border_bottom;
-		border_top = border_bottom = border_left = 50; // Top, left, right when rotated
-		border_right = 80;
+		border_top = border_bottom = border_left = 50*2; // Top, left, right when rotated
+		border_right = 80*2;
 		
 		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
-		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1, size_x, size_y);
+		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1,
+				// Size of each image frame in x direction
+				size_x - border_left - border_right, 
+				// Size of each image frame in y direction
+				size_y - border_top - border_bottom);
 		
 		//setSize(size_x, size_y);
 		
@@ -340,7 +344,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		datetext = new rotatedText2 ("");
 		
 		add(datetext);
-		datetext.setBounds(size_x-25, 10, 40, 100);
+		datetext.setBounds(size_x-35, 10, 40, 100);
 		
 		add(jcomp);
 		jcomp.setBounds(0, 0, size_x, size_y);
