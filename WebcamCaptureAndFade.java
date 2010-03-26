@@ -75,6 +75,17 @@ public class WebcamCaptureAndFade {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String s[]) {
+		
+		// Move mouse to the point 5000,5000 px (out of the screen)
+		Robot rob;
+		try {
+			rob = new Robot();
+			rob.setAutoDelay(500); // 0,5 s
+			rob.mouseMove(5000, 5000);
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+		
 		// Make the main window
 		JFrame frame = new JFrame();
 		frame.setTitle("Webcam capture and imagefading - " +
