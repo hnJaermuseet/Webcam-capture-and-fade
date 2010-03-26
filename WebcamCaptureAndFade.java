@@ -75,11 +75,12 @@ public class WebcamCaptureAndFade {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String s[]) {
+		// Make the main window
 		JFrame frame = new JFrame();
 		frame.setTitle("Webcam capture and imagefading - " +
 				"Vitenfabrikken Jærmuseet - " +
-				"made by Hallvard Nygard - " +
-				"Vitenfabrikken.no");
+				"made by Hallvard Nygård - " +
+				"Vitenfabrikken.no / Jaermuseet.no");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.setUndecorated(true);
