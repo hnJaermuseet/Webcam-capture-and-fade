@@ -88,6 +88,7 @@ public class WebcamCaptureAndFade {
 		
 		// Make the main window
 		JFrame frame = new JFrame();
+		frame.setAlwaysOnTop(true);
 		frame.setTitle("Webcam capture and imagefading - " +
 				"Vitenfabrikken Jærmuseet - " +
 				"made by Hallvard Nygård - " +
@@ -218,6 +219,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		if(captureWindow)
 		{
 			cw = new JFrame("Capture from webcam");
+			cw.setAlwaysOnTop(true);
 			cw.setSize(sizeCaptureWindow_x, sizeCaptureWindow_y);
 			cw.addKeyListener(new captureWindowKeyListner());
 			cw.setUndecorated(true);
@@ -990,6 +992,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	{
 		// Capture Window
 		cw.setVisible(true);
+		cw.toFront();
 		
 		// Timer for closing the capturewindow
 		TimerTask task = new TimerTask () {
@@ -1108,6 +1111,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			
 			setSize(sizeText_x, sizeText_y);
 			setUndecorated(true);
+			setAlwaysOnTop(true);
 			
 			this.setText(text);
 		}
@@ -1122,6 +1126,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 				{
 					// Only setVisible if its needed
 					// or the focus window will change
+					toFront();
 					setVisible(true);
 				}
 				
