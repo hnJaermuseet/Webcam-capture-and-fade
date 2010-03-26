@@ -188,8 +188,42 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		images_lastadded = new ArrayList<Integer>();
 		images_nevershown = new ArrayList<Integer>();
 		
+		
+		Vector devices = (Vector) CaptureDeviceManager.getDeviceList(null).clone();
+		Enumeration enumeration = devices.elements();
+		System.out.println("- Available cameras -");
+		ArrayList<String> names = new ArrayList<String>();
+		while (enumeration.hasMoreElements())
+		{
+			CaptureDeviceInfo cdi = (CaptureDeviceInfo) enumeration.nextElement();
+			String name = cdi.getName();
+			if (name.startsWith("vfw:"))
+			{
+				names.add(name);
+				System.out.println(name);
+			}
+		}
+		
 		//String str1 = "vfw:Logitech USB Video Camera:0";
-		String str2 = "vfw:Microsoft WDM Image Capture (Win32):0";
+		//String str2 = "vfw:Microsoft WDM Image Capture (Win32):0";
+		if(names.size() == 0) {
+			JOptionPane.showMessageDialog(null, "Ingen kamera funnet. " +
+					"Du må koble til et kamera for å kjøre programmet.",
+					"Feil",
+					 JOptionPane.ERROR_MESSAGE); 
+			 System.exit(0);
+		} else if (names.size() > 1)
+		{
+
+			JOptionPane.showMessageDialog(null, 
+					"Fant mer enn 1 kamera. " +
+					"Velger da:\n" +
+					names.get(0),
+					"Advarsel",
+					 JOptionPane.WARNING_MESSAGE);
+		}
+		
+		String str2 = names.get(0);
 		di = CaptureDeviceManager.getDevice(str2);
 		ml = di.getLocator();
 		
