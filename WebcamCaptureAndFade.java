@@ -76,6 +76,22 @@ public class WebcamCaptureAndFade {
 
 	public static void main(String s[]) {
 		
+		// Getting save directory
+		String saveDir;
+		if(s.length > 0)
+		{
+			saveDir = s[0];
+		}
+		else
+		{
+			saveDir =
+				JOptionPane.showInputDialog(null, "Please enter directory where " +
+						"the images is/will be saved\n\n" +
+						"Also possible to specifiy as argument 1 when " +
+						"running this program.",
+						 "l:\\webcamtest"); 
+		}
+		
 		// Move mouse to the point 5000,5000 px (out of the screen)
 		Robot rob;
 		try {
@@ -97,7 +113,7 @@ public class WebcamCaptureAndFade {
 
 		frame.setUndecorated(true);
 		
-		WebcamCaptureAndFadePanel panel = new WebcamCaptureAndFadePanel();
+		WebcamCaptureAndFadePanel panel = new WebcamCaptureAndFadePanel(saveDir);
 		frame.getContentPane().add(panel);
 		frame.addKeyListener(panel);
 		frame.pack();
@@ -119,9 +135,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public int fps = 30; // Frames per second
 	
-	//public String saveDirectory = "l:\\webcamtest";
-	public String saveDirectory = "d:\\webcamtest";
-	
+	public String saveDirectory;
 	
 	// X * fps = x seconds
 	public int number_of_frames_betweencaptures = 5*fps; // Number of frame to wait between captures 
@@ -165,7 +179,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public boolean enable_forceNewImage;
 	
-	public WebcamCaptureAndFadePanel() {
+	public WebcamCaptureAndFadePanel(String saveDir) {
+		
+		System.out.println("Using " + saveDir + " as directory for the images.");
+		saveDirectory = saveDir;
 		
 		getImages();
 		images_used = new ArrayList<Integer>();
