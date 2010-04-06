@@ -137,7 +137,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public String saveDirectory;
 	
 	// X * fps = x seconds
-	public int number_of_frames_betweencaptures = 5*fps; // Number of frame to wait between captures 
+	public int number_of_frames_betweencaptures = 5*fps; // Number of frame to wait between captures
+	public int number_of_frames_before_cwopen = 1*fps; // Number of frames to wait before we allow capturewindow to be opened
 	public int number_of_frames_showimage = 4*fps; // Number of frames to hold the image before fading to next
 	public int number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
@@ -1044,6 +1045,11 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	Timer cwTimer;
 	public void openCaptureWindow ()
 	{
+		if(framenr - lastcapture_framenr < number_of_frames_before_cwopen)
+		{
+			return;
+		}
+		
 		// Capture Window
 		cw.setVisible(true);
 		cw.toFront();
