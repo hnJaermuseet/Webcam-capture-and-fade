@@ -143,6 +143,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public int number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
 	public int number_of_second_capturewindow = 60; // Number of seconds to have the capturewindow open
+	public double number_of_second_showcapturetext = 1.5; // Number of seconds to show a text after capture, 0 for none
 	
 	public boolean captureWindow; // Open captureWindow when pressing the capture key
 	
@@ -1087,9 +1088,29 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 					cw.setVisible(false);
 					if(timer != null)
 						timer.cancel();
+					
 					cwText.setText(""); // Empty text
 					lastcapture_framenr = framenr;
 					cwTimer.cancel();
+					
+					if(number_of_second_showcapturetext > 0)
+					{
+						cwText.setText("Bildet ble lagret ...");
+						
+						TimerTask task = new TimerTask () {
+							
+							@Override
+							public void run() {
+								EventQueue.invokeLater(new Runnable() {
+									public void run() {
+										cwText.setText(""); // Empty text
+									}
+								});
+							}
+						};
+						timer = new Timer();
+						timer.schedule(task, (int)(number_of_second_showcapturetext*1000));
+					}
 				}
 				else
 				{
