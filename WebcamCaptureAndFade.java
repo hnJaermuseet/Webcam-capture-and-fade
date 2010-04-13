@@ -143,7 +143,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public int number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
 	public Color color_redborder = Color.red; // Change the color of the "red" border
 	public int number_of_second_capturewindow = 60; // Number of seconds to have the capturewindow open
-	public double number_of_second_showcapturetext = 1.5; // Number of seconds to show a text after capture, 0 for none
+	public double number_of_second_showcapturetext = 3; // Number of seconds to show a text after capture, 0 for none
 	
 	public boolean captureWindow; // Open captureWindow when pressing the capture key
 	
