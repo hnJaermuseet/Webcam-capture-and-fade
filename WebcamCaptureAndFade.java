@@ -175,6 +175,9 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public int sizeCaptureWindow_x, sizeCaptureWindow_y;
 	public int cwLocation_x, cwLocation_y;
 	
+	public int txt_location_x, txt_location_y;
+	public int txt_size_x, txt_size_y;
+	
 	public boolean enable_datetext;
 	public rotatedText2 datetext;
 	
@@ -330,6 +333,10 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		enable_datetext = false;
 		enable_forceNewImage = false;
 		captureWindow = false;
+		
+		txt_location_x = txt_location_y = 0;
+		txt_size_x = 18;
+		txt_size_y = size_y;
 	}
 
 	protected void layout1024 () {
@@ -344,8 +351,12 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		// Borders in relation to a normal screen (not the rotated)
 		int border_top, border_left, border_right, border_bottom;
 		border_top = border_bottom = border_left = 50*2; // Top, left, right when rotated
-		border_right = 80*2;
+		border_right = 80*2; // Bottom when rotated
 		
+		txt_location_x = border_left;
+		txt_location_y = border_top;
+		txt_size_x = 18;
+		txt_size_y = size_y-border_bottom-txt_location_y;
 		
 		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
 		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1,
@@ -1182,8 +1193,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		public String text;
 		protected JComponent textlabel;
 		
-		public int sizeText_x = 18;
-		public int sizeText_y = size_y;
+		public int sizeText_x = txt_size_x;
+		public int sizeText_y = txt_size_y;
 		
 		public rotatedText (String text) {
 			
@@ -1193,6 +1204,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 			setSize(sizeText_x, sizeText_y);
 			setUndecorated(true);
 			setAlwaysOnTop(true);
+			setLocation(txt_location_x, txt_location_y);
 			
 			this.setText(text);
 		}
