@@ -149,6 +149,8 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	
 	public int percentage_of_new_images = 50; // 50%
 	
+	public float fade_per_frame = 0.05f;
+	
 	// ## OTHER STUFF ##
 	// (no need to change any here ;-)
 	public static Player player;
@@ -182,6 +184,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public rotatedText2 datetext;
 	
 	public boolean enable_forceNewImage;
+	public boolean enable_forceNewImageNow = false;
 	
 	public WebcamCaptureAndFadePanel(String saveDir) {
 		
@@ -828,7 +831,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 					}
 					else if (wait[i][j] <= 0)
 					{
-						fade[i][j] += 0.05f;
+						fade[i][j] += fade_per_frame;
 						if(
 								enable_datetext && 
 								fade[i][j] > 0.50f && 
@@ -885,6 +888,11 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 						
 						// Adding the new image
 						images_used.add((Integer)imagenum_next[i][j]);
+						
+						if(enable_forceNewImageNow)
+						{
+							wait[i][j] = 0;
+						}
 						
 						foundNew = true;
 					}
