@@ -91,6 +91,12 @@ public class WebcamCaptureAndFade {
 						 "l:\\webcamtest"); 
 		}
 		
+		String layout = "";
+		if(s.length > 1)
+		{
+			layout = s[1];
+		}
+		
 		// Move mouse to the point 5000,5000 px (out of the screen)
 		Robot rob;
 		try {
@@ -112,7 +118,7 @@ public class WebcamCaptureAndFade {
 
 		frame.setUndecorated(true);
 		
-		WebcamCaptureAndFadePanel panel = new WebcamCaptureAndFadePanel(saveDir);
+		WebcamCaptureAndFadePanel panel = new WebcamCaptureAndFadePanel(saveDir, layout);
 		frame.getContentPane().add(panel);
 		frame.addKeyListener(panel);
 		frame.pack();
@@ -186,7 +192,7 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 	public boolean enable_forceNewImage;
 	public boolean enable_forceNewImageNow = false;
 	
-	public WebcamCaptureAndFadePanel(String saveDir) {
+	public WebcamCaptureAndFadePanel(String saveDir, String layout) {
 		
 		System.out.println("Using " + saveDir + " as directory for the images.");
 		saveDirectory = saveDir;
@@ -270,8 +276,18 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		 * - imagepanels
 		 */
 
-		//layout1280();
-		layout1024();
+		if(layout.equals("1024v2"))
+		{
+			layout1024v2();
+		}
+		else if(layout.equals("1280"))
+		{
+			layout1280();
+		}
+		else
+		{
+			layout1024();
+		}
 		
 		// Capture Window
 		if(captureWindow)
@@ -417,6 +433,46 @@ class WebcamCaptureAndFadePanel extends JPanel implements KeyListener {
 		setSize(size_x, size_y);
 		setBounds(0, 0, 200, 200);
 		setPreferredSize(new Dimension(size_x,size_y));
+	}
+
+	protected void layout1024v2 () {
+		// Resolution of the camera pictures divided by 2
+		
+		// 320x240, Creative camera for layout1280
+		size_x = 320;
+		size_y = 240;
+		sizeCaptureWindow_x = size_x;
+		sizeCaptureWindow_y = size_y;
+		
+		
+		imagepanels = new WebcamCaptureAndFadeImagePanel[1];
+		imagepanels[0] = new WebcamCaptureAndFadeImagePanel(1,1, size_x, size_y);
+		
+		setLayout(new BorderLayout());
+		setSize((4+2+4)*size_x, (6)*size_y);
+		
+		add(imagepanels[0], BorderLayout.WEST);
+		
+		if ((comp = player.getVisualComponent()) != null) {
+			add(comp, BorderLayout.EAST);
+		}
+		
+		enable_datetext = false;
+		enable_forceNewImage = true;
+		enable_forceNewImageNow = true;
+		captureWindow = false;
+		
+		txt_location_x = txt_location_y = 0;
+		txt_size_x = 18;
+		txt_size_y = size_y;
+		
+		number_of_frames_betweencaptures = 0*fps; // Number of frame to wait between captures
+		number_of_frames_before_cwopen = 0*fps; // Number of frames to wait before we allow capturewindow to be opened
+		number_of_frames_showimage = 600*fps; // Number of frames to hold the image before fading to next
+		number_of_frames_redborder = (int)0.5*fps; // Number of frames the red border should last, -1 to disable
+		number_of_second_showcapturetext = 0.1; // Number of seconds to show a text after capture, 0 for none
+		
+		fade_per_frame = 0.50f; // Short fading
 	}
 	
 	protected void getImages() {
