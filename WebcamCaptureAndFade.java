@@ -56,6 +56,7 @@ import com.sun.image.codec.jpeg.*;
  * Program is tested with 256M heap size on Windows XP and Windows 7.
  * 
  * Remember to install Java Media Framework.
+ * A note on JMF: Added, on the first line, the path to the lib folder of Java Media Framework in c:\windows\java\.jmfdir
  * 
  * Program is written by Hallvard Nygård <hn@jaermuseet.no> for Jærmuseet / Vitenfabrikken.
  * 
